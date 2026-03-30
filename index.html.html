@@ -1,0 +1,49 @@
+:class="selectedStudent.id === student.id ? 'bg-blue-50' : ''">
+                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0"></div>
+                                    <div>
+                                        <p class="text-sm font-semibold" x-text="student.name"></p>
+                                        <p class="text-[10px] text-gray-500" x-text="student.class"></p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <button @click="triggerSOS()" class="w-full sos-gradient text-white p-5 rounded-[24px] font-bold shadow-xl hover:scale-[1.02] transition active:scale-95">
+                        ЭКСТРЕННЫЙ ВЫЗОВ (SOS)
+                    </button>
+                </aside>
+
+                <main class="flex-1">
+                    <div class="apple-glass p-8 shadow-xl min-h-[400px]">
+                        <template x-if="selectedStudent">
+                            <div class="animate-in fade-in duration-300">
+                                <div class="flex items-start justify-between mb-8">
+                                    <div class="flex items-center gap-6">
+                                        <div class="w-24 h-24 bg-blue-100 rounded-[32px] flex items-center justify-center text-3xl">🎓</div>
+                                        <div>
+                                            <h3 class="text-2xl font-bold text-gray-900" x-text="selectedStudent.name"></h3>
+                                            <span class="text-blue-600 font-medium" x-text="'Класс: ' + selectedStudent.class"></span>
+                                        </div>
+                                    </div>
+                                    <span class="px-4 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">АКТИВЕН</span>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                    <div class="p-5 bg-orange-50 rounded-2xl border border-orange-100">
+                                        <p class="text-[10px] font-bold text-orange-400 uppercase mb-2">Медицинская карта</p>
+                                        <p class="text-sm font-medium text-orange-900" x-text="selectedStudent.medical"></p>
+                                    </div>
+                                    <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
+                                        <p class="text-[10px] font-bold text-blue-400 uppercase mb-2">Родитель: <span x-text="selectedStudent.parentName"></span></p>
+                                        <p class="text-sm font-medium text-blue-900" x-text="selectedStudent.phone"></p>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-100">
+                                    <a :href="'tel:' + selectedStudent.phone" class="px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-black transition">Позвонить родителям</a>
+                                    <button @click="sendAlert(selectedStudent.name)" class="px-6 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50">Отправить СМС</button>
+                                    <button @click="alert('Вызов администрации отправлен')" class="px-6 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50">Вызвать к директору</button>
+                                </div>
+                            </div>
+                        </template>
