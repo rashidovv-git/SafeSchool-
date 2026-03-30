@@ -1,67 +1,49 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SchoolSafe — Цифровой сервис школы</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f2f2f7; }
-        .apple-glass {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 24px;
-        }
-        .sos-gradient {
-            background: linear-gradient(135deg, #ff3b30 0%, #ff2d55 100%);
-        }
-    </style>
-</head>
-<body x-data="schoolApp()">
-
-    <template x-if="!isLoggedIn">
-        <div class="min-h-screen flex items-center justify-center p-6">
-            <div class="apple-glass p-10 w-full max-w-md shadow-2xl">
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold">S</div>
-                    <h1 class="text-2xl font-semibold">Вход в SchoolSafe</h1>
-                    <p class="text-gray-500 text-sm mt-2">Введите данные для доступа к системе</p>
-                </div>
-                <div class="space-y-4">
-                    <input type="text" placeholder="Email или телефон" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500 transition">
-                    <input type="password" placeholder="Пароль" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500 transition">
-                    <button @click="login()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-semibold hover:bg-blue-700 transition shadow-lg">Войти</button>
-                </div>
-                <p class="text-center text-xs text-gray-400 mt-6 cursor-pointer">Восстановить пароль</p>
-            </div>
-        </div>
-    </template>
-
-    <template x-if="isLoggedIn">
-        <div class="max-w-6xl mx-auto p-4 md:p-8 space-y-6">
-            
-            <header class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-xl font-semibold">Панель управления</h2>
-                    <p class="text-gray-500 text-sm">Добро пожаловать, <span class="font-medium text-gray-800">Администратор</span></p>
-                </div>
-                <button @click="isLoggedIn = false" class="text-sm text-red-500 font-medium">Выйти</button>
-            </header>
-
-            <div class="flex flex-col md:flex-row gap-6">
-                <aside class="w-full md:w-1/3 space-y-4">
-                    <div class="apple-glass p-4 shadow-sm">
-                        <input type="text" x-model="searchQuery" placeholder="Поиск ученика (напр. Сардор)..." 
-                               class="w-full bg-transparent p-2 outline-none border-b border-gray-100">
+:class="selectedStudent.id === student.id ? 'bg-blue-50' : ''">
+                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0"></div>
+                                    <div>
+                                        <p class="text-sm font-semibold" x-text="student.name"></p>
+                                        <p class="text-[10px] text-gray-500" x-text="student.class"></p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
                     </div>
-                    
-                    <div class="apple-glass overflow-hidden shadow-sm">
-                        <div class="p-4 bg-gray-50/50 border-b border-gray-100 text-xs font-bold text-gray-400 uppercase tracking-wider">Результаты</div>
-                        <div class="max-h-64 overflow-y-auto">
-                            <template x-for="student in filteredStudents()" :key="student.id">
-                                <div @click="selectedStudent = student" 
-                                     class="p-4 hover:bg-blue-50 cursor-pointer transition flex items-center gap-3 border-b border-gray-50 last:border-0"
+
+                    <button @click="triggerSOS()" class="w-full sos-gradient text-white p-5 rounded-[24px] font-bold shadow-xl hover:scale-[1.02] transition active:scale-95">
+                        ЭКСТРЕННЫЙ ВЫЗОВ (SOS)
+                    </button>
+                </aside>
+
+                <main class="flex-1">
+                    <div class="apple-glass p-8 shadow-xl min-h-[400px]">
+                        <template x-if="selectedStudent">
+                            <div class="animate-in fade-in duration-300">
+                                <div class="flex items-start justify-between mb-8">
+                                    <div class="flex items-center gap-6">
+                                        <div class="w-24 h-24 bg-blue-100 rounded-[32px] flex items-center justify-center text-3xl">🎓</div>
+                                        <div>
+                                            <h3 class="text-2xl font-bold text-gray-900" x-text="selectedStudent.name"></h3>
+                                            <span class="text-blue-600 font-medium" x-text="'Класс: ' + selectedStudent.class"></span>
+                                        </div>
+                                    </div>
+                                    <span class="px-4 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">АКТИВЕН</span>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                    <div class="p-5 bg-orange-50 rounded-2xl border border-orange-100">
+                                        <p class="text-[10px] font-bold text-orange-400 uppercase mb-2">Медицинская карта</p>
+                                        <p class="text-sm font-medium text-orange-900" x-text="selectedStudent.medical"></p>
+                                    </div>
+                                    <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
+                                        <p class="text-[10px] font-bold text-blue-400 uppercase mb-2">Родитель: <span x-text="selectedStudent.parentName"></span></p>
+                                        <p class="text-sm font-medium text-blue-900" x-text="selectedStudent.phone"></p>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-100">
+                                    <a :href="'tel:' + selectedStudent.phone" class="px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-black transition">Позвонить родителям</a>
+                                    <button @click="sendAlert(selectedStudent.name)" class="px-6 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50">Отправить СМС</button>
+                                    <button @click="alert('Вызов администрации отправлен')" class="px-6 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50">Вызвать к директору</button>
+                                </div>
+                            </div>
+                        </template>
